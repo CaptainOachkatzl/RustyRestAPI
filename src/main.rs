@@ -3,15 +3,24 @@
 use rocket::*;
 
 #[get("/")]
-fn index() -> &'static str {
+async fn index() -> &'static str {
     return "hello world";
 }
 
 #[get("/another")]
-fn another_get() -> &'static str {
+async fn another_get() -> &'static str {
     return "another get response";
 }
 
-fn main() {
-    rocket::ignite().mount("/", routes![index, another_get]).launch();
+#[rocket::main]
+async fn main() {
+    let server_status = rocket::build()
+        .mount("/", routes![index, another_get])
+        .launch()
+        .await;
+
+    match server_status {
+        Ok(_) => println!("Server shutdown gracefully."),
+        Err(_) => println!("Server execution failure.")
+    }
 }
