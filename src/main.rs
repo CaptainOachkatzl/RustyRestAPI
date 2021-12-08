@@ -7,15 +7,15 @@ async fn index() -> &'static str {
     return "hello world";
 }
 
-#[get("/another")]
-async fn another_get() -> &'static str {
-    return "another get response";
+#[get("/hello/<name>")]
+async fn greet(name: &str) -> String {
+    return format!("hi, {}!", name);
 }
 
 #[rocket::main]
 async fn main() {
     let server_status = rocket::build()
-        .mount("/", routes![index, another_get])
+        .mount("/", routes![index, greet])
         .launch()
         .await;
 
